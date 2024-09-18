@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control del ESP32</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 80%;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #17c31f;
+    }
+
+    #response {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+  <script>
+    function sendData() {
+      const data = document.getElementById("inputData").value;
+      const responseElement = document.getElementById("response");
+
+      // Mostrar mensaje de cargando
+      responseElement.innerText = "Enviando datos...";
+
+      // Asegúrate de que la IP del ESP32 sea la correcta
+      fetch("http://192.168.141.68/data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ value: data })
+      })
+      .then(response => response.json())
+      .then(result => {
+        console.log("Respuesta del ESP32:", result);
+        responseElement.innerText = "Respuesta: " + result.message;
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        responseElement.innerText = "Error al enviar los datos.";
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Control del ESP32</h1>
+    <input type="text" id="inputData" placeholder="Ingresa datos para enviar">
+    <button onclick="sendData()">Enviar al ESP32</button>
+    <p id="response"></p>
+  </div>
+</body>
+</html>
